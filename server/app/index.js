@@ -24,7 +24,7 @@ server.use(Restify.throttle({
 }));
 server.use(Restify.requestExpiry({
   header: 'x-request-expiry-time'
-});
+}));
 
 // socket.io
 var io = require('socket.io')(server.server);
