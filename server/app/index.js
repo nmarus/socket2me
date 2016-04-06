@@ -1,7 +1,7 @@
 'use strict';
 
 var moment = require('moment');
-var debug = require('debug')('socket-server');
+var debug = require('debug')('socket2me-server');
 var _ = require('lodash');
 
 // restify
