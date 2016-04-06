@@ -9,7 +9,7 @@ The server is not configured with any authentication. This would be trivial to a
 
 Socket2me Server requires the client to initiate a connection via API call in order to get a generated unique token. Once this token is recieved, it will expire within 24 hours if not refreshed.
 
-The token is then used to attach the  client to a socket.io port namespace which is in turn used as a transport mechanizm to relay requests to a generated unique URL on the server, back to the client.
+The token is then used to attach the  client to a socket.io port namespace which is in turn used as a transport mechanizm to relay requests back to the client. The mapping of request to client is accompished my mapping the token to the socket session to the unique URL.
 
 * Powered by Restify
 * Rate Limiter
