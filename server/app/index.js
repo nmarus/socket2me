@@ -13,7 +13,7 @@ server.use(Restify.bodyParser({
   'mapParams': true,
   'mapFiles': false,
   'overrideParams': true,
-  'maxBodySize': 2048
+  'maxBodySize': 2048000
 }));
 server.use(Restify.queryParser());
 server.use(Restify.dateParser(300));
