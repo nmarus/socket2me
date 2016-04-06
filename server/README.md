@@ -1,5 +1,5 @@
-# socket2me-server
-Server side of socket2me.
+# API Reference for Socket2me Server
+Server side of socket2me. It is recommened to use one of the socket2me-clients to connect to the server as it handles a lot of the API calls and token refresh operations automatically. 
 
 ## API calls
 The following API calls are available on the server:
