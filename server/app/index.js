@@ -81,6 +81,7 @@ function newClient() {
     // on client disconnect
     socket.on('disconnect', function(){
       debug('client disconnected');
+      socket = null;
     });
 
     // on client error
@@ -156,7 +157,7 @@ function forwardReq(req, res, next) {
   // forward request to client...
   socket.emit('request', req);
 
-  // respomd
+  // respond
   res.send(200);
   next(); 
 }
