@@ -35,7 +35,7 @@ After cloning the repo, modify any parameers that need to be changed in regard s
 ```bash
 $ cd socket2me/server/app
 $ docker build -t socket2me .
-$ docker run -d -it --expose 80 --name socket2me socket2me
+$ docker run -d -it -p 80:80 --name socket2me socket2me
 ```
 
 #### Client Install
