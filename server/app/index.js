@@ -6,13 +6,25 @@ var _ = require('lodash');
 
 // restify
 var Restify = require('restify');
+
+// Restify plugins
 var server = Restify.createServer();
 server.use(Restify.bodyParser({
   'mapParams': true,
   'mapFiles': false,
-  'overrideParams': true
+  'overrideParams': true,
+  'maxBodySize': 2048
 }));
 server.use(Restify.queryParser());
+server.use(Restify.dateParser(300));
+server.use(Restify.throttle({
+  burst: 50,
+  rate: 10,
+  ip: true
+}));
+server.use(Restify.requestExpiry({
+  header: 'x-request-expiry-time'
+});
 
 // socket.io
 var io = require('socket.io')(server.server);
@@ -162,7 +174,7 @@ function forwardReq(req, res, next) {
   socket.emit('request', req);
 
   // respond
-  res.send(200);
+  res.send(200, 'OK');
   next(); 
 }
 
@@ -175,9 +187,13 @@ server.get('/v1/new', function(req, res, next) {
   // add client
   var client = newClient();
 
-  //respond with token
-  res.send(200, client.token);
-
+  if(client && client.token) {
+    //r espond with token
+    res.send(200, client.token);
+  } else {
+    // error
+    res.send(400, 'error');
+  }
   next();
 });
 
