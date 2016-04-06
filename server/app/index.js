@@ -18,7 +18,7 @@ server.use(Restify.queryParser());
 var io = require('socket.io')(server.server);
 
 // settings
-var port = 80;
+var port = 3000;
 var tokenMinutes = 24 * 60;
 
 // authorized clients
@@ -81,7 +81,12 @@ function newClient() {
     // on client disconnect
     socket.on('disconnect', function(){
       debug('client disconnected');
-      socket = null;
+
+      // disable reference to socket
+      var found = _.find(clients, {name: nsp.name});
+      if(found) {
+        found.socket = null;
+      }
     });
 
     // on client error
