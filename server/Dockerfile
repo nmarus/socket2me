@@ -27,4 +27,4 @@ RUN find /app -type d -exec chmod 777 {} +
 RUN npm install
 
 # Run node app
-CMD DEBUG=* nodemon index.js
+CMD DEBUG=socket2me-server nodemon index.js
