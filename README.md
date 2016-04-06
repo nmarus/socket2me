@@ -41,4 +41,4 @@ $ docker run -d -it --expose 80 --name socket2me socket2me
 #### Client Install
 Currently the only client that is available is for Node JS. Others may be available soon. 
 
-*See [socket2me-client](https://github.com/nmarus/socket2me/blob/master/client/README.md)*
+*See [socket2me-client](https://github.com/nmarus/socket2me/blob/master/client-node/README.md)*
