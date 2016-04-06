@@ -18,7 +18,7 @@ server.use(Restify.queryParser());
 var io = require('socket.io')(server.server);
 
 // settings
-var port = 3000;
+var port = 80;
 var tokenMinutes = 24 * 60;
 
 // authorized clients
