@@ -1,5 +1,5 @@
 # Socket2me
-Socket2me is a client/server framework for the forwarding of internet requests to application that do not have inbound internet connectivity. This does not support replying to those requests with anything other than a 200/OK. The primary use case is for relaying webhooks to services that do not have inbound internet access (i.e behind a NAT firewall). However, other many other use cases are possible when there is only a need for one way exchange of data. For example, web forms, impage uploading, etc.
+Socket2me is a client/server framework for the forwarding of internet requests to application that do not have inbound internet connectivity. This does not support replying to those requests with anything other than a 200/OK. The primary use case is for relaying webhooks to services that do not have inbound internet access (i.e behind a NAT firewall). However, many other use cases are possible when there is only a need for one way exchange of data. For example, web forms, image uploading, etc.
 
 ###### Topology
 socket2me-client --> || nat || --> socket2me-server <-- inbound get/post request
