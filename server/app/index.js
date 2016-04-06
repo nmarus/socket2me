@@ -85,7 +85,7 @@ function newClient() {
 
     // on client error
     socket.on('error', function(data){
-      console.log('error');
+      debug('error');
     });
 
   });
@@ -103,8 +103,8 @@ function newClient() {
   return client;
 }
 
+// remove client
 function removeClient(client) {
-
   // disconnect socket
   if(client.socket) client.socket.disconnect(true);
 
