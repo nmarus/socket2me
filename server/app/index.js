@@ -70,7 +70,6 @@ function newClient() {
 
     // map socket to token
     var found = _.find(clients, {name: nsp.name});
-
     if(found) {
       found.socket = socket;
     } else {
