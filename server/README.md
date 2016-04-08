@@ -48,7 +48,7 @@ The request object includes:
 
 ###### Example
 
-If a call (get) is made to: "http://server/v1/go/mrs6wpu2mawk0swpja1c3dit?somevar1=somevalue1", the client will receive the following request object in socket event:
+If a call (get) is made to: "http://server/v1/go/mrs6wpu2mawk0swpja1c3dit?somevar1=somevalue1", the client will receive the following request object in the socket event:
 
 ```js
 {

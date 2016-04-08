@@ -14,14 +14,12 @@ $ npm install socket2me-client --save
 ### Properties
 
 #### socket2me#callbackUrl
-This is the generated URL for using with callbacks. It will look something like 
-`http://servername/v1/go/jdfdjhfjdkhfajddjfadh`
+This is the generated URL for using with callbacks. It will look something like `http://servername/v1/go/jdfdjhfjdkhfajddjfadh`
 
 ### Functions
 
-#### socket2me.processReq(function(req) {});
-Defines function to process rests for this client received from the server. The 
-request object contains the following three objects:
+#### socket2me#listen(fn:Function)
+Defines function to process rests for this client received from the server. The request object contains the following three objects:
 
 * `req.headers` : An object including the headers received at server
 * `req.params` : An ibject wi the parsed parsed paramenters from url query 
@@ -29,7 +27,16 @@ request object contains the following three objects:
 * `req.body` : raw contents of the request body. used for manual parsing or 
   grabbing of binary data
 
+##### Example:
+```js
+socket2me.listen(function(req) {
+  console.log('request: %s', JSON.stringify(req));
+});
+```
+
 ### Events
+
+#### socket2me#on(string:Event, fn:Function)
 
 #### 'connected'
 This is triggered when the socket2me client has connected to a socker2me server.
@@ -41,7 +48,7 @@ server.
 #### 'error', function(err){}
 This is triggered when the socket2me client has connected to a socker2me server.
 
-##### Example:
+##### Example Program Structure:
 ```js
 var Socket2meClient = require('socket2me-client')
 
