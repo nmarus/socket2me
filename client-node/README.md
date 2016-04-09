@@ -13,7 +13,7 @@ $ npm install socket2me-client --save
 
 ### Properties
 
-#### socket2me#callbackUrl
+#### socket2me#url
 This is the generated URL for using with callbacks. It will look something like `http://servername/go/jdfdjhfjdkhfajddjfadh`
 
 ### Functions
@@ -67,9 +67,9 @@ socket2me.on('connected', function() {
   // Token will remain the same as long as the expire interval does not lapse
   // during the disconnection.
 
-  // Log value of socket2me.callbackUrl to console
-  console.log('socket server url: %s', socket2me.callbackUrl);
-  // Outputs [http://servername/go/generatedtoken] At this point, run your 
+  // Log value of socket2me.url to console
+  console.log('socket server url: %s', socket2me.url);
+  // Outputs [http://servername/go/generatedtoken] At this point, run your
   // functions that (re)create your webhooks with your API.
 
 });

@@ -24,7 +24,7 @@ function Socket2meClient(socketServer) {
   self.getSocket(function(err, socket, url, token) {
     if(!err) {
 
-      self.callbackUrl = url;
+      self.url = url;
 
       socket.on('connect', function(){
         debug('client connected');
