@@ -14,7 +14,7 @@ $ npm install socket2me-client --save
 ### Properties
 
 #### socket2me#callbackUrl
-This is the generated URL for using with callbacks. It will look something like `http://servername/v1/go/jdfdjhfjdkhfajddjfadh`
+This is the generated URL for using with callbacks. It will look something like `http://servername/go/jdfdjhfjdkhfajddjfadh`
 
 ### Functions
 
@@ -22,9 +22,9 @@ This is the generated URL for using with callbacks. It will look something like 
 Defines function to process rests for this client received from the server. The request object contains the following three objects:
 
 * `req.headers` : An object including the headers received at server
-* `req.params` : An ibject wi the parsed parsed paramenters from url query 
+* `req.params` : An ibject wi the parsed parsed paramenters from url query
   strings, body json, and any form URL encoded or multipart encoded body values.
-* `req.body` : raw contents of the request body. used for manual parsing or 
+* `req.body` : raw contents of the request body. used for manual parsing or
   grabbing of binary data
 
 ##### Example:
@@ -42,7 +42,7 @@ socket2me.listen(function(req) {
 This is triggered when the socket2me client has connected to a socker2me server.
 
 #### 'disconnected'
-This is triggered when the socket2me client has disconnected from a socker2me 
+This is triggered when the socket2me client has disconnected from a socker2me
 server.
 
 #### 'error', function(err){}
@@ -61,17 +61,17 @@ var socket2me = new Socket2meClient(host);
 // Connected event (fires shortly after Socket2meClient is instantiated)
 socket2me.on('connected', function() {
 
-  // The connected event will trigger when a connection is made AND will 
+  // The connected event will trigger when a connection is made AND will
   // retrigger if the connection bounces.
 
-  // Token will remain the same as long as the expire interval does not lapse 
+  // Token will remain the same as long as the expire interval does not lapse
   // during the disconnection.
- 
+
   // Log value of socket2me.callbackUrl to console
   console.log('socket server url: %s', socket2me.callbackUrl);
-  // Outputs [http://servername/v1/go/generatedtoken] At this point, run your 
+  // Outputs [http://servername/go/generatedtoken] At this point, run your 
   // functions that (re)create your webhooks with your API.
-  
+
 });
 
 // disconnected event
@@ -89,11 +89,10 @@ function processReq(req) {
   // log a variable that might have been passed
   console.log(req.params.data.personEmail);
 
-  // Run your functions that process the incoming request. 
+  // Run your functions that process the incoming request.
 
-  // No need to process a response as the spark2me-server reposnds 200/OK for 
+  // No need to process a response as the spark2me-server reposnds 200/OK for
   // all inbound requests if the client is connected.
 }
 
 ```
-

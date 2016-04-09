@@ -47,7 +47,7 @@ function newToken(len) {
   function expand(r) { return gen() + r }
 
   var r = gen();
-  while(r.length < len) { r = expand(r) } 
+  while(r.length < len) { r = expand(r) }
 
   // return token @ length
   return r.slice(0,len);
@@ -61,7 +61,7 @@ function refreshToken(token) {
     found.expires = moment().add(tokenMinutes, 'minutes');
 
     debug('token refreshed: %s', found.token);
-    
+
     return true;
   } else {
     return false;
@@ -109,13 +109,13 @@ function newClient() {
 
   var client = {
     token: token,
-    expires: expires, 
-    name: nsp.name, 
+    expires: expires,
+    name: nsp.name,
     socket: null
   };
 
   debug('token requested: %s', token);
-  
+
   clients.push(client);
   return client;
 }
@@ -159,7 +159,7 @@ function forwardReq(req, res, next) {
     // send client not connected error
     res.send(400, 'client not connected');
     return next();
-  } 
+  }
 
   // else client is connected...
 
@@ -167,7 +167,8 @@ function forwardReq(req, res, next) {
   req = {
     headers: req.headers,
     params: req.params,
-    body: req.body
+    body: req.body,
+    method: req.method
   };
 
   // forward request to client...
@@ -175,15 +176,25 @@ function forwardReq(req, res, next) {
 
   // respond
   res.send(200, 'OK');
-  next(); 
+  next();
 }
 
 // api socket forwarding routes
-server.get('/v1/go/:token', forwardReq);
-server.post('/v1/go/:token', forwardReq);
+server.get('/go/:token/:route/:file', forwardReq);
+server.put('/go/:token/:route/:file', forwardReq);
+server.post('/go/:token/:route/:file', forwardReq);
+server.del('/go/:token/:route/:file', forwardReq);
+server.get('/go/:token/:route', forwardReq);
+server.put('/go/:token/:route', forwardReq);
+server.post('/go/:token/:route', forwardReq);
+server.del('/go/:token/:route', forwardReq);
+server.get('/go/:token', forwardReq);
+server.put('/go/:token', forwardReq);
+server.post('/go/:token', forwardReq);
+server.del('/go/:token', forwardReq);
 
 // get new token
-server.get('/v1/new', function(req, res, next) {
+server.get('/new', function(req, res, next) {
   // add client
   var client = newClient();
 
@@ -198,7 +209,7 @@ server.get('/v1/new', function(req, res, next) {
 });
 
 // refresh expiration on existing token
-server.get('/v1/refresh/:token', function(req, res, next) {
+server.get('/refresh/:token', function(req, res, next) {
   // if token is missing or invalid
   if(!req.params.token) {
     res.send(400, 'invalid api call');
@@ -221,7 +232,7 @@ setInterval(function() {
   var expiredClients = _.filter(clients, function(token) {
     return token.expires < moment();
   });
-  
+
   // remove expired clients
   _.forEach(expiredClients, function(expired) {
     debug('token expired: %s', expired.token);
@@ -232,4 +243,3 @@ setInterval(function() {
 
 // start server
 server.listen(port);
-

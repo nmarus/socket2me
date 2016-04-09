@@ -15,9 +15,9 @@ function Socket2meClient(socketServer) {
   self.clientfn;
 
   // request options
-  self.options = { 
+  self.options = {
     baseUrl: 'http://' + socketServer,
-    json: true 
+    json: true
   };
 
   // get socket and listen for events
@@ -63,14 +63,14 @@ util.inherits(Socket2meClient, EventEmitter);
 Socket2meClient.prototype.getSocket = function(cb) {
   var self = this;
 
-  self.options.url = '/v1/new';
+  self.options.url = '/new';
 
   // request token
   request(self.options, function(err, res, body) {
     if (!err && res.statusCode == 200) {
       var token = body;
       var ioNsp = self.options.baseUrl + '/' + token;
-      var url = self.options.baseUrl + '/v1/go/' + token;
+      var url = self.options.baseUrl + '/go/' + token;
 
       //create socket
       var socket = io(ioNsp);
@@ -85,7 +85,7 @@ Socket2meClient.prototype.getSocket = function(cb) {
 Socket2meClient.prototype.refreshToken = function(token, cb) {
   var self = this;
 
-  self.options.url = '/v1/refresh/' + token;
+  self.options.url = '/refresh/' + token;
 
   // request token refresh from api
   request(self.options, function(err, res, body) {
@@ -104,8 +104,3 @@ Socket2meClient.prototype.listen = function(fn) {
 };
 
 module.exports = Socket2meClient;
-
-
-
-
-

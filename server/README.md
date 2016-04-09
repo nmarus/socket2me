@@ -1,33 +1,34 @@
 # API Reference for Socket2me Server
-Server side of socket2me. It is recommened to use one of the socket2me-clients to connect to the server as it handles a lot of the API calls and token refresh operations automatically. 
+Server side of socket2me. It is recommened to use one of the socket2me-clients to connect to the server as it handles a lot of the API calls and token refresh operations automatically.
 
 ## API calls
 The following API calls are available on the server:
 
-##### get http://server/v1/new
+#### Token Management
+
+##### (get) /new
 Creates new client token. Token expires after 24hours if not refreshed. When token expires, client is disconnected.
 
 ###### Returns:
 * 200 : `token`
 
-##### get http://server/v1/refresh/`token`
+##### (get) /refresh/`token`
 Refreshes token. Must be called before token expires.
 
 ###### Returns:
 * 200 : `OK`
 * 404 : not found
 
-##### get http://server/v1/go/`token`
+#### Routes
+
+##### (get|put|post|del) /go/`token`/:route/:file
+##### (get|put|post|del) /go/`token`/:route
+##### (get|put|post|del) /go/`token`
 Forwards request to client and returns ok to the request.
 
 ###### Returns:
 * 200 : `OK`
 
-##### post http://server/v1/go/`token`
-Forwards request to client and returns ok to the request.
-
-###### Returns:
-* 200 : `OK`
 
 ## Socket.io
 Each token binds to a socket.io namespace. Only one client can be connected to a namespace/token at any time. If a second attempt to connect is made, the first connection is disconnected.
@@ -45,10 +46,11 @@ The request object includes:
 * req.headers
 * req.params
 * req.body
+* req.method
 
 ###### Example
 
-If a call (get) is made to: "http://server/v1/go/mrs6wpu2mawk0swpja1c3dit?somevar1=somevalue1", the client will receive the following request object in the socket event:
+If a call (get) is made to: "http://server/go/mrs6wpu2mawk0swpja1c3dit?somevar1=somevalue1", the client will receive the following request object in the socket event:
 
 ```js
 {
