@@ -1,6 +1,6 @@
 {
   "name": "socket2me-client",
-  "version": "1.0.4",
+  "version": "1.0.5",
   "description": "Client for socket2me",
   "main": "index.js",
   "scripts": {
