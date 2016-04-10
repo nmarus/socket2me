@@ -53,7 +53,7 @@ This is triggered when the socket2me client has connected to a socker2me server.
 var Socket2meClient = require('socket2me-client')
 
 // Socket host
-var host = 'mysocketserver.com';
+var host = 'http://mysocketserver.com';
 
 // Create new socket2me client and connect
 var socket2me = new Socket2meClient(host);

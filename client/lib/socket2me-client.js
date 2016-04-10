@@ -16,7 +16,7 @@ function Socket2meClient(socketServer) {
 
   // request options
   self.options = {
-    baseUrl: 'http://' + socketServer,
+    baseUrl: socketServer,
     json: true
   };
 
