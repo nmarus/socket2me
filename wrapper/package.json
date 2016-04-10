@@ -1,6 +1,6 @@
 {
   "name": "socket2me-wrapper",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Client for socket2me",
   "main": "index.js",
   "scripts": {
@@ -21,6 +21,6 @@
   "homepage": "https://github.com/nmarus/socket2me#readme",
   "dependencies": {
     "lodash": "^4.9.0",
-    "socket2me-client": "^1.0.4"
+    "socket2me-client": "^1.0.5"
   }
 }
