@@ -1,6 +1,6 @@
 # socket2me-wrapper
 
-Attempts to wrap the socket2me-client in a format familiar to Node Webservices like Express and Restify. This is not a 1:1 feature match for those services...yet...
+Attempts to wrap the socket2me-client in a format familiar to Node http services like Express and Restify. This is not a 1:1 feature match for those services...yet...
 
 #### Example:
 ```js
