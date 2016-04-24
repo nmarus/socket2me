@@ -44,8 +44,8 @@ Server.prototype.listen = function(port, host, cb) {
     cb();
   });
 
-  // listen for connections
-  self.socket2me.listen(function(req) {
+  // define request handler
+  self.socket2me.requestHandler(function(req) {
 
     var res = {};
     res.send = function() {};

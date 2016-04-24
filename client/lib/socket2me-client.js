@@ -28,7 +28,7 @@ function Socket2meClient(socketServer) {
 
       socket.on('connect', function(){
         debug('client connected');
-        self.emit('connected');
+        self.emit('connected', self.url);
       });
 
       socket.on('error', function(data){
@@ -97,7 +97,7 @@ Socket2meClient.prototype.refreshToken = function(token, cb) {
   });
 };
 
-Socket2meClient.prototype.listen = function(fn) {
+Socket2meClient.prototype.requestHandler = function(fn) {
   var self = this;
 
   self.clientfn = fn;

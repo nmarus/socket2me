@@ -39,7 +39,7 @@ socket2me.listen(function(req) {
 #### socket2me#on(string:Event, fn:Function)
 
 #### 'connected'
-This is triggered when the socket2me client has connected to a socker2me server.
+This is triggered when the socket2me client has connected to a socker2me server. The function has one optional property for url that equals is the same value as the value of `socket2me#url`.
 
 #### 'disconnected'
 This is triggered when the socket2me client has disconnected from a socker2me
@@ -50,7 +50,7 @@ This is triggered when the socket2me client has connected to a socker2me server.
 
 ##### Example Program Structure:
 ```js
-var Socket2meClient = require('socket2me-client')
+var Socket2meClient = require('socket2me-client');
 
 // Socket host
 var host = 'http://mysocketserver.com';
@@ -59,7 +59,7 @@ var host = 'http://mysocketserver.com';
 var socket2me = new Socket2meClient(host);
 
 // Connected event (fires shortly after Socket2meClient is instantiated)
-socket2me.on('connected', function() {
+socket2me.on('connected', function(url) {
 
   // The connected event will trigger when a connection is made AND will
   // retrigger if the connection bounces.
@@ -68,7 +68,7 @@ socket2me.on('connected', function() {
   // during the disconnection.
 
   // Log value of socket2me.url to console
-  console.log('socket server url: %s', socket2me.url);
+  console.log('socket server url: %s', url);
   // Outputs [http://servername/go/generatedtoken] At this point, run your
   // functions that (re)create your webhooks with your API.
 
@@ -80,7 +80,7 @@ socket2me.on('disconnected', function() {
 });
 
 // Define function that is triggered when request is made to the generated url
-socket2me.listen(processReq);
+socket2me.requestHandler(processReq);
 
 function processReq(req) {
   // log request to console
