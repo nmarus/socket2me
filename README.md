@@ -35,10 +35,10 @@ After cloning the repo, modify any parameers that need to be changed in regard s
 ```bash
 $ cd socket2me/server/app
 $ docker build -t socket2me .
-$ docker run -d -it -p 80:80 --expose 80 --name socket2me socket2me
+$ docker run -d -it -p 80:80 --expose 80 -e PORT=80 --name socket2me socket2me
 ```
 
 #### Client Install
-Currently the only client that is available is for Node JS. Others may be available soon. 
+Currently the only client that is available is for Node JS. Others may be available soon.
 
 *See [socket2me-client](https://github.com/nmarus/socket2me/blob/master/client/README.md)*

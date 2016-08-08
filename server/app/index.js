@@ -30,7 +30,7 @@ server.use(Restify.requestExpiry({
 var io = require('socket.io')(server.server);
 
 // settings
-var port = 80;
+var port = process.env.PORT;
 var tokenMinutes = 24 * 60;
 
 // authorized clients
