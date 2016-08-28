@@ -1,44 +1,79 @@
-# Socket2me
-Socket2me is a client/server framework for the forwarding of internet requests to application that do not have inbound internet connectivity. This does not support replying to those requests with anything other than a 200/OK. The primary use case is for relaying webhooks to services that do not have inbound internet access (i.e behind a NAT firewall). However, many other use cases are possible when there is only a need for one way exchange of data. For example, web forms, image uploading, etc.
+# Socket2me (beta)
+Socket2me is a client/server framework. The
+[client](https://github.com/nmarus/socket2me/blob/master/client/README.md)
+serves as an interface to the Server API to easily embed the ability to receive
+inbound internet requests to applications that do not have direct inbound
+internet connectivity. If you are just stumbling across this project, it is
+probably easier to start by looking at the client setup.
 
-###### Topology
-socket2me-client --> || nat || --> socket2me-server <-- inbound get/post request
+### Topology
+The Socket2me client sits on a network that does not have direct inbound
+internet access. The Client initiates an outbound  connection to the server in
+order to obtain an internet reachable URL. This URL can then be used by the client
+to receive inbound internet requests.
 
-#### Features / About
-The server is not configured with any authentication. This would be trivial to add if needed.
+socket2me-client --> || nat || --> socket2me-server <-- inbound request
 
-Socket2me Server requires the client to initiate a connection via API call in order to get a generated unique token. Once this token is recieved, it will expire within 24 hours if not refreshed.
+## API Reference for the Socket2Me Server
+It is easiest to get started with one of the clients, however, if those do not
+meet your needs you can interface directly with a Socket2Me Server. The
+Socket2Me server utilized a simple REST API for the generation and refreshing of
+tokens which are needed in order to receive proxied requests. Once the token has
+been generated, the Socket2Me Server utilizes the socket.io framework for the
+bidirectional communication between the client and server.
 
-The token is then used to attach the  client to a socket.io port namespace which is in turn used as a transport mechanizm to relay requests back to the client. The mapping of request to client is accompished my mapping the token to the socket session to the unique URL.
+### Token Management
 
-* Powered by Restify
-* Rate Limiter
-* Body parser
-* Query string parser
-* Token generator and expirer
+##### (get) /new
+Creates new client token. Token expires after 6 hours if not refreshed. When
+the token expires, the client is disconnected.
 
-#### Server Install
-This can run as a simple nodejs app, or in Docker with the provided Dockerfile.
+###### Returns:
+* `200` : token
 
-###### Node JS
-After cloning the repo, modify any parameers that need to be changed in regard service port, rate limiter, etc. Then...
+##### (get) /refresh/`token`
+Refreshes token. Must be called before token expires.
 
-```bash
-$ cd socket2me/server/app
-$ npm install
-$ node .
+###### Returns:
+* `200` : OK
+* `500` : token not found
+
+### Dynamic Routes
+
+##### (get|put|post|del) /go/`token`
+##### (get|put|post|del) /go/`token`/*
+
+###### Returns:
+* `200` : OK
+* `500` : token not found
+* `XXX` : Can vary on response from client
+
+Forwards request to client and returns client response to the request.
+
+### Socket-io Interface
+
+Once you have a Socket2Me Server token, you can use the socket-io client library to connect.
+
+##### Node JS Example:
+
+```js
+var io = require('socket.io-client');
+
+var server = 'https://mysocketserver.com';
+var token = 'mytoken';
+
+var socket = io(server + '/' + token);
+
+// socket events
+socket.on('connect', function() {
+  console.log('client connected with token "%s"', token);
+
+  socket.on('request', function(req, respond) {
+    // process request object
+    console.dir(req);
+
+    // respond(status, body, headers)
+    respond(200, 'Hello World!', {"X-Test": "Hello World"});
+  });
+});
 ```
-
-###### Docker
-After cloning the repo, modify any parameers that need to be changed in regard service port, rate limiter, etc. Then...
-
-```bash
-$ cd socket2me/server/app
-$ docker build -t socket2me .
-$ docker run -d -it -p 80:80 --expose 80 -e PORT=80 --name socket2me socket2me
-```
-
-#### Client Install
-Currently the only client that is available is for Node JS. Others may be available soon.
-
-*See [socket2me-client](https://github.com/nmarus/socket2me/blob/master/client/README.md)*

@@ -11,17 +11,21 @@
     "url": "git+https://github.com/nmarus/socket2me.git"
   },
   "keywords": [
-    "socket2me"
+    "socket2me",
+    "socket",
+    "proxy"
   ],
   "author": "Nicholas Marus <nmarus@gmail.com>",
-  "license": "MIT",
+  "license": "LGPL-3.0",
   "bugs": {
     "url": "https://github.com/nmarus/socket2me/issues"
   },
   "homepage": "https://github.com/nmarus/socket2me#readme",
   "dependencies": {
-    "debug": "^2.2.0",
-    "request": "^2.69.0",
-    "socket.io-client": "^1.4.5"
+    "bluebird": "^3.4.3",
+    "lodash": "^4.15.0",
+    "request": "^2.74.0",
+    "request-promise": "^4.1.1",
+    "socket.io-client": "^1.4.8"
   }
 }

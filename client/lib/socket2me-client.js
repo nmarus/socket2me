@@ -1,106 +1,150 @@
 'use strict';
 
 var EventEmitter = require('events').EventEmitter;
-var request = require('request');
-var debug = require('debug')('socket2me-client');
+var Promise = require('bluebird');
+var request = require('request-promise');
 var util = require('util');
 var io = require('socket.io-client');
+var _ = require('lodash');
 
 function Socket2meClient(socketServer) {
-  var self = this;
+  EventEmitter.call(this);
 
-  // enable event emitter
-  EventEmitter.call(self);
+  if(typeof socketServer !== 'string') {
+    throw new Error('missing required option socketServer');
+  }
 
-  self.clientfn;
+  this.socketServer = socketServer;
+  this.token = null;
+  this.refreshTimer = 6*60*60*1000;
 
-  // request options
-  self.options = {
-    baseUrl: socketServer,
-    json: true
+  // interval for token refresh
+  this.refreshInterval = null;
+
+  // default request options
+  this.requestOptions = {
+    baseUrl: this.socketServer,
+    json: true,
+    timeout: 20000
+  }
+
+  // default client function
+  this.clientfn = (request, respond) => {
+    console.log('request handler not defined, dumping values to console...');
+    console.dir(request);
+    respond(200, 'OK');
   };
 
-  // get socket and listen for events
-  self.getSocket(function(err, socket, url, token) {
-    if(!err) {
+  // connect to socket server
+  this.connect();
 
-      self.url = url;
-
-      socket.on('connect', function(){
-        debug('client connected');
-        self.emit('connected', self.url);
-      });
-
-      socket.on('error', function(data){
-        debug('error');
-      });
-
-      socket.on('disconnect', function(){
-        self.emit('disconnected');
-        debug('client disconnected');
-      });
-
-      socket.on('request', function(req) {
-        self.emit('request', req);
-        // if client function defined
-        if(typeof self.clientfn === 'function') {
-          self.clientfn(req);
-        }
-      });
-
-      setInterval(function() {
-        self.refreshToken(token);
-      }, 120 * 1000);
-
-    } else {
-      throw new Error('could not get socket');
-    }
-  });
-
+  // start interval
+  this.refreshIntervalInit();
 }
 util.inherits(Socket2meClient, EventEmitter);
 
-Socket2meClient.prototype.getSocket = function(cb) {
-  var self = this;
+Socket2meClient.prototype.getToken = function(token) {
+  var token = _.clone(this.requestOptions);
+  token.url = '/new';
+  return request(token)
+    .then(t => {
+      this.token = t;
+      return Promise.resolve(t);
+    })
+    .catch(err => {
+      return Promise.reject(new Error('unable to connect to socket server'));
+    });
+};
 
-  self.options.url = '/new';
+Socket2meClient.prototype.getSocket = function() {
+  var socket = io(this.socketServer + '/' + this.token);
+  socket.io.reconnection(true);
+  socket.io.reconnectionAttempts(15);
+  socket.io.reconnectionDelay(2000);
+  socket.io.reconnectionDelayMax(10000);
+  socket.io.timeout(120*60*1000);
+  return Promise.resolve(socket);
+};
 
-  // request token
-  request(self.options, function(err, res, body) {
-    if (!err && res.statusCode == 200) {
-      var token = body;
-      var ioNsp = self.options.baseUrl + '/' + token;
-      var url = self.options.baseUrl + '/go/' + token;
+Socket2meClient.prototype.initSocket = function(socket) {
+  socket.on('connect', () => {
+    console.log('client connected with token "%s"', this.token);
+    this.emit('connected', this.socketServer + '/go/' + this.token);
+  });
 
-      //create socket
-      var socket = io(ioNsp);
+  socket.on('error', err => {
+    console.log('error attempting to reconnect with token "%s"', this.token);
+    this.refreshToken()
+      .catch(err => {
+        console.log('client could not refresh token "%s"', this.token);
+        socket.disconnect(true);
+        setTimeout(() => {
+          this.connect();
+        }, 15000);
+      });
+  });
 
-      cb(null, socket, url, token);
-    } else {
-      cb(new Error('socket could not be created'));
-    }
+  socket.on('reconnecting', attempt => {
+    console.log('attempting to reconnect with token "%s" (attempt #%s)', this.token, attempt);
+  });
+
+  socket.on('disconnect', () => {
+    console.log('client disconnected with token "%s"', this.token);
+    this.emit('disconnected');
+    socket.disconnect(true);
+    setTimeout(() => {
+      this.connect();
+    }, 15000);
+  });
+
+  socket.on('request', (req, respond) => {
+    this.clientfn(req, respond);
   });
 };
 
-Socket2meClient.prototype.refreshToken = function(token, cb) {
-  var self = this;
+Socket2meClient.prototype.refreshToken = function() {
+  var refresh = _.clone(this.requestOptions);
+  refresh.url = '/refresh/' + this.token;
+  return request(refresh)
+    .then(() => {
+      console.log('client refreshed with token "%s"', this.token);
+    });
+};
 
-  self.options.url = '/refresh/' + token;
+Socket2meClient.prototype.refreshIntervalInit = function() {
+  this.refreshInterval = setInterval(() => {
+    this.refreshToken().catch(err => {
+      console.log('client could not refresh token "%s"', this.token);
+    });
+  }, this.refreshTimer);
+};
 
-  // request token refresh from api
-  request(self.options, function(err, res, body) {
-    if (!err && res.statusCode == 200) {
-      cb ? cb(null) : null;
-    } else {
-      cb ? cb(new Err('socket could not be refreshed')) : null;
-    }
-  });
+Socket2meClient.prototype.refreshIntervalReset = function() {
+  if(this.refreshInterval) {
+    clearInterval(this.refreshInterval);
+  }
+  return this.refreshIntervalInit();
+};
+
+Socket2meClient.prototype.connect = function(token) {
+  if(token) {
+    return this.getSocket()
+      .then(socket => this.initSocket(socket))
+      .catch(err => console.log(err.stack));
+  } else {
+    return this.getToken()
+      .then(token => this.getSocket())
+      .then(socket => this.initSocket(socket))
+      .catch(err => console.log(err.stack));
+  }
 };
 
 Socket2meClient.prototype.requestHandler = function(fn) {
-  var self = this;
-
-  self.clientfn = fn;
+  if(typeof fn === 'function') {
+    this.clientfn = fn;
+  } else {
+    throw new Error('requestHandler must be passsed a function');
+  }
 };
 
 module.exports = Socket2meClient;
