@@ -1,4 +1,5 @@
 # Socket2me-client
+This is a Node JS Client for the [Socket2Me](https://github.com/nmarus/socket2me) Server.
 
 #### Installation
 The Socket2me-client can be installed via NPM.
