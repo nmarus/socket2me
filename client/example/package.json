@@ -1,6 +1,6 @@
 {
   "dependencies": {
-    "socket2me-client": "^2.0.0"
+    "socket2me-client": "^1.2.0"
   },
   "author": "Nicholas Marus <nmarus@gmail.com>",
   "license": "LGPL-3.0"
